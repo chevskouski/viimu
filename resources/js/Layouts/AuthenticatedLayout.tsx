@@ -9,6 +9,7 @@ import {
 } from "@/Components/ui/breadcrumb";
 import { Separator } from "@/Components/ui/separator";
 import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar";
+import { Toaster } from "@/Components/ui/sonner";
 import { usePage } from "@inertiajs/react";
 import React, { type PropsWithChildren, type ReactNode, useMemo } from "react";
 
@@ -85,6 +86,7 @@ export default function Authenticated({ children }: PropsWithChildren) {
 					</div>
 				</header>
 				<main className="flex">{children}</main>
+				<Toaster />
 			</div>
 		</SidebarProvider>
 	);

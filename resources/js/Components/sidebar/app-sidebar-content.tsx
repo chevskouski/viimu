@@ -62,9 +62,14 @@ const menuItems = [
 		title: "Mantenimientos",
 		icon: Command,
 		subItems: [
-			{ label: "Servicios", href: "#", icon: Settings },
-			{ label: "Tipo de Servicios", href: "#", icon: Settings },
-			{ label: "Categoría de Gastos", href: "#", icon: Settings },
+			{ label: "Servicios", href: "/dashboard/maintenance", icon: Settings },
+			{
+				label: "Tipo de Servicios",
+				href: "/dashboard/maintenance/service-category",
+				icon: Settings,
+			},
+			{ label: "Categoría de Gastos", href: "/dashboard/d", icon: Settings },
+			{ label: "Cuentas Bancarias", href: "/dashboard/ddf", icon: Settings },
 		],
 	},
 ];
@@ -72,6 +77,15 @@ const menuItems = [
 export function AppSidebarContent() {
 	const { url } = usePage();
 	const [openItems, setOpenItems] = useState<Record<string, boolean>>({});
+
+	useState(() => {
+		const initialState: Record<string, boolean> = {};
+		for (const menu of menuItems) {
+			initialState[menu.title] =
+				menu.subItems?.some((subItem) => url === subItem.href) || false;
+		}
+		setOpenItems(initialState);
+	});
 
 	const handleToggle = (title: string) => {
 		setOpenItems((prev) => ({
@@ -86,7 +100,7 @@ export function AppSidebarContent() {
 				menu.subItems ? (
 					<Collapsible
 						key={menu.title}
-						defaultOpen={false}
+						defaultOpen={menu.subItems.some((subItem) => url === subItem.href)}
 						className="group/collapsible"
 						onOpenChange={(open) =>
 							setOpenItems((prev) => ({ ...prev, [menu.title]: open }))
@@ -111,7 +125,14 @@ export function AppSidebarContent() {
 								<SidebarMenuSub>
 									{menu.subItems.map((subItem) => (
 										<SidebarMenuSubItem key={subItem.href}>
-											<a href={subItem.href} className="flex items-center">
+											<a
+												href={subItem.href}
+												className={`flex items-center p-1.5 rounded-md ${
+													url === subItem.href
+														? "bg-muted-foreground text-background"
+														: ""
+												}`}
+											>
 												<subItem.icon className="w-4 h-4 mr-2" />
 												{subItem.label}
 											</a>
@@ -126,7 +147,9 @@ export function AppSidebarContent() {
 						<SidebarMenuButton asChild>
 							<a
 								href={menu.href}
-								className={`flex items-center ${url === menu.href ? "bg-muted-foreground text-background" : ""}`}
+								className={`flex items-center ${
+									url === menu.href ? "bg-muted-foreground text-background" : ""
+								}`}
 							>
 								<menu.icon className="w-5 h-5 mr-2" />
 								{menu.title}

@@ -13,6 +13,10 @@ class ServiceCategory extends Model
         'status',
     ];
 
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
     public function service(): HasMany
     {
         return $this->hasMany(Service::class);
