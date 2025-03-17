@@ -3,6 +3,14 @@ import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
 import {
+	Pagination,
+	PaginationContent,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/Components/ui/pagination";
+import {
 	Table,
 	TableBody,
 	TableCaption,
@@ -12,7 +20,7 @@ import {
 	TableRow,
 } from "@/Components/ui/table";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, useForm, usePage } from "@inertiajs/react";
+import { Head, router, useForm, usePage } from "@inertiajs/react";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -25,23 +33,57 @@ interface ServiceCategory {
 }
 
 export default function ServiceCategory() {
-	const { categories = [], flash } = usePage().props as unknown as {
-		categories?: ServiceCategory[];
+	// Obtenemos las categorías de servicios
+	const {
+		categories = { data: [], links: [], current_page: 1, last_page: 1 },
+		flash,
+	} = usePage().props as unknown as {
+		categories: {
+			data: ServiceCategory[];
+			links: { url: string | null; label: string; active: boolean }[];
+			current_page: number;
+			last_page: number;
+		};
 		flash?: { success?: string; error?: string };
 	};
 
+	//Manejar paginación
+	const handlePageChange = (url: string | null) => {
+		if (url) {
+			router.visit(url);
+		}
+	};
+
+	const formatLinkLabel = (label: string): string => {
+		return label.replace(/&laquo;|&raquo;/g, "");
+	};
+
+	const pageLinks = categories.links.filter(
+		(link) =>
+			!link.label.includes("&laquo;") && !link.label.includes("&raquo;"),
+	);
+	const prevLink = categories.links.find((link) =>
+		link.label.includes("&laquo;"),
+	);
+
+	const nextLink = categories.links.find((link) =>
+		link.label.includes("&raquo;"),
+	);
+
+	// Mostrar mensajes flash
+	useEffect(() => {
+		if (flash?.success) toast.success(flash.success);
+		if (flash?.error) toast.error(flash.error);
+	}, [flash]);
+
+	// Agregar un nuevo servicio
 	const { data, setData, post, processing, errors, reset } = useForm({
 		name: "",
 		description: "",
 		status: true,
 	});
 
-	useEffect(() => {
-		if (flash?.success) toast.success(flash.success);
-		if (flash?.error) toast.error(flash.error);
-	}, [flash]);
-
-	const handleCreateService = () => {
+	const handleSubmitNewService = () => {
 		post(route("dashboard.maintenance.service-category.store"), {
 			preserveScroll: true,
 			onSuccess: () => reset(),
@@ -51,7 +93,7 @@ export default function ServiceCategory() {
 	return (
 		<AuthenticatedLayout>
 			<Head title="Maintenance" />
-			<div className="py-0">
+			<div className="py-0 w-full">
 				<div className="space-y-6 sm:px-6 lg:px-8">
 					<h1 className="font-semibold text-2xl">Tipos de Servicios</h1>
 
@@ -60,7 +102,7 @@ export default function ServiceCategory() {
 						title="Agregar Servicio"
 						triggerTitle="Agregar Servicio"
 						description="Agrega un nuevo tipo de servicio proporcionando su nombre y una breve descripción."
-						onSubmit={handleCreateService}
+						onSubmit={handleSubmitNewService}
 						processing={processing}
 					>
 						<div className="grid gap-4 py-4">
@@ -107,19 +149,18 @@ export default function ServiceCategory() {
 
 					{/* Tabla de categorías de servicio */}
 					<Table>
-						<TableCaption>Lista de los servicios de la empresa.</TableCaption>
 						<TableHeader>
 							<TableRow>
 								<TableHead>#</TableHead>
-								<TableHead className="w-[250px]">Nombre</TableHead>
+								<TableHead className="w-1/4">Nombre</TableHead>
 								<TableHead className="w-full">Descripción</TableHead>
 								<TableHead>Estado</TableHead>
 								<TableHead className="text-center">Acción</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{categories.length > 0 ? (
-								categories.map((category) => (
+							{categories.data.length > 0 ? (
+								categories.data.map((category) => (
 									<TableRow key={category.id}>
 										<TableCell className="font-medium">{category.id}</TableCell>
 										<TableCell>{category.name}</TableCell>
@@ -148,6 +189,59 @@ export default function ServiceCategory() {
 							)}
 						</TableBody>
 					</Table>
+					{/* Componente de paginación */}
+					{categories.last_page > 1 && (
+						<div className="flex justify-center mt-4">
+							<Pagination>
+								<PaginationContent>
+									<PaginationItem>
+										<PaginationPrevious
+											label="Anterior"
+											href="#"
+											onClick={(e) => {
+												e.preventDefault();
+												handlePageChange(prevLink?.url || null);
+											}}
+											className={
+												!prevLink?.url
+													? "pointer-events-none opacity-50"
+													: "cursor-pointer"
+											}
+										/>
+									</PaginationItem>
+									{pageLinks.map((link) => (
+										<PaginationItem key={link.label}>
+											<PaginationLink
+												href="#"
+												onClick={(e) => {
+													e.preventDefault();
+													handlePageChange(link.url);
+												}}
+												isActive={link.active}
+											>
+												{formatLinkLabel(link.label)}
+											</PaginationLink>
+										</PaginationItem>
+									))}
+									<PaginationItem>
+										<PaginationNext
+											label="Siguiente"
+											href="#"
+											onClick={(e) => {
+												e.preventDefault();
+												handlePageChange(nextLink?.url || null);
+											}}
+											className={
+												!nextLink?.url
+													? "pointer-events-none opacity-50"
+													: "cursor-pointer"
+											}
+										/>
+									</PaginationItem>
+								</PaginationContent>
+							</Pagination>
+						</div>
+					)}
 				</div>
 			</div>
 		</AuthenticatedLayout>

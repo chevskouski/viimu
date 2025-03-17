@@ -8,9 +8,11 @@ use Inertia\Inertia;
 
 class ServiceCategoryController extends Controller
 {
+
+    //SELECT
     public function index()
     {
-        $categories = ServiceCategory::all();
+        $categories = ServiceCategory::orderBy('id', 'asc')->paginate(8);
 
         return Inertia::render('Dashboard/Maintenance/ServiceCategory', [
             'categories' => $categories,
@@ -18,20 +20,25 @@ class ServiceCategoryController extends Controller
 
     }
 
+    //INSERT
     public function store(Request $request)
     {
-        $validate = $request->validate([
-        'name' => 'required|string|max:75|unique:service_categories',
-        'description' => 'nullable|string|max:255',
-        'status' => 'boolean',
-    ]);
+        $request->validate([
+            'name' => 'required|string|max:75|unique:service_categories',
+            'description' => 'nullable|string|max:255',
+            'status' => 'boolean',
+        ]);
 
-    $category = ServiceCategory::create($validate);
+        $category = ServiceCategory::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'status' => $request->status
+        ]);
 
-    return back()->with([
-        'success' => 'SERVICE CATEGORY created successfully.',
-        'category' => $category,
-    ]);
+        return back()->with([
+            'success' => 'SERVICE CATEGORY created successfully.',
+            'category' => $category,
+        ]);
     }
 
     public function show(ServiceCategory $serviceCategory)
