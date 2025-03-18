@@ -41,32 +41,29 @@ class ServiceCategoryController extends Controller
         ]);
     }
 
-    public function show(ServiceCategory $serviceCategory)
-    {
-        return Inertia::render('ServiceCategory/Show', [
-            'category' => $serviceCategory,
-        ]);
-    }
-
+    //UPDATE ITEM
     public function update(Request $request, ServiceCategory $serviceCategory)
     {
         $validate = $request->validate([
-            'name' => 'required'|'string'|'max:75'|'unique:service_categories,name,'.$serviceCategory->id,
-            'description' => 'nullable'|'string'|'max:255',
+            'name' => 'required|string|max:75|unique:service_categories,name,'.$serviceCategory->id,
+            'description' => 'nullable|string|max:255',
             'status' => 'boolean',
         ]);
-
+        
         $serviceCategory->update($validate);
-
-        return redirect()->route('service-categories.index')
-        -> with('success', 'Service category updated successfully.');
+        
+        return back()->with([
+            'success' => 'SERVICE CATEGORY updated successfully.'
+        ]);
     }
 
+    //DELETE ITEM
     public function destroy(ServiceCategory $serviceCategory)
     {
         $serviceCategory->delete();
 
-        return redirect()->route('service-categories.index')
-        -> with('message', 'Service category deleted successfully.');
+        return back()->with([
+            'success' => 'SERVICE CATEGORY deleted successfully.'
+        ]);
     }
 }

@@ -22,10 +22,13 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/dashboard/maintenance/service-category', [ServiceCategoryController::class, 'index'])
-    ->name('dashboard.maintenance.service-category');
+        ->name('dashboard.maintenance.service-category');
     Route::post('/dashboard/maintenance/service-category', [ServiceCategoryController::class, 'store'])
         ->name('dashboard.maintenance.service-category.store');
-
+    Route::patch('/dashboard/maintenance/service-category/{serviceCategory}', [ServiceCategoryController::class, 'update'])
+        ->name('dashboard.maintenance.service-category.update');
+    Route::delete('/dashboard/maintenance/service-category/{serviceCategory}', [ServiceCategoryController::class, 'destroy'])
+        ->name('dashboard.maintenance.service-category.destroy');
 });
 
 

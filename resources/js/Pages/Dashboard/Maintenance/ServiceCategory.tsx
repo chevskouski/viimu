@@ -1,4 +1,5 @@
 import { AddItemModal } from "@/Components/AddItemModal";
+import { EditItemModal } from "@/Components/EditItemModal";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
@@ -10,19 +11,20 @@ import {
 	PaginationNext,
 	PaginationPrevious,
 } from "@/Components/ui/pagination";
+import { Switch } from "@/Components/ui/switch";
 import {
 	Table,
 	TableBody,
-	TableCaption,
 	TableCell,
 	TableHead,
 	TableHeader,
 	TableRow,
 } from "@/Components/ui/table";
+import { Textarea } from "@/Components/ui/textarea";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Pencil, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface ServiceCategory {
@@ -90,6 +92,60 @@ export default function ServiceCategory() {
 		});
 	};
 
+	// Eliminar una categoría de servicio
+	const handleDeleteCategory = (id: number) => {
+		if (
+			confirm(
+				"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminara todos los servicios asociados a esta categoría.",
+			)
+		) {
+			router.delete(
+				route("dashboard.maintenance.service-category.destroy", {
+					serviceCategory: id,
+				}),
+			);
+		}
+	};
+
+	// Actualizar Item
+	const [editingCategory, setEditingCategory] =
+		useState<ServiceCategory | null>(null);
+	const editForm = useForm<{
+		name: string;
+		description: string;
+		status: boolean;
+	}>({
+		name: "",
+		description: "",
+		status: true,
+	});
+
+	const initializeEditForm = (category: ServiceCategory) => {
+		setEditingCategory(category);
+		editForm.setData({
+			name: category.name,
+			description: category.description || "",
+			status: category.status,
+		});
+	};
+
+	const handleSubmitEditService = () => {
+		if (!editingCategory) return;
+
+		editForm.patch(
+			route("dashboard.maintenance.service-category.update", {
+				serviceCategory: editingCategory.id,
+			}),
+			{
+				preserveScroll: true,
+				onSuccess: () => {
+					setEditingCategory(null);
+					editForm.reset();
+				},
+			},
+		);
+	};
+
 	return (
 		<AuthenticatedLayout>
 			<Head title="Maintenance" />
@@ -97,11 +153,11 @@ export default function ServiceCategory() {
 				<div className="space-y-6 sm:px-6 lg:px-8">
 					<h1 className="font-semibold text-2xl">Tipos de Servicios</h1>
 
-					{/* Modal para agregar un nuevo servicio */}
+					{/* Modal para agregar una nueva categoria de servicio */}
 					<AddItemModal
 						title="Agregar Servicio"
 						triggerTitle="Agregar Servicio"
-						description="Agrega un nuevo tipo de servicio proporcionando su nombre y una breve descripción."
+						description="Agrega una nueva categoria de servicio proporcionando su nombre y una breve descripción."
 						onSubmit={handleSubmitNewService}
 						processing={processing}
 					>
@@ -171,10 +227,78 @@ export default function ServiceCategory() {
 											{category.status ? "Activo" : "Inactivo"}
 										</TableCell>
 										<TableCell className="flex gap-2">
-											<Button variant="outline">
-												<Pencil size={16} /> Editar
-											</Button>
-											<Button variant="destructive">
+											{/* Modal para editar una categoria de servicio */}
+											<EditItemModal
+												title="Editar - Categoria de Servicio"
+												triggerTitle="Editar"
+												description="Edita esta categoria de servicio modificando ya sea su nombre y/o descripción."
+												onSubmit={handleSubmitEditService}
+												processing={editForm.processing}
+												onTriggerClick={() => initializeEditForm(category)}
+											>
+												<div className="grid gap-4 py-4">
+													<div className="grid grid-cols-4 items-center gap-4">
+														<Label htmlFor="edit-name" className="text-right">
+															Nombre
+														</Label>
+														<Input
+															id="edit-name"
+															type="text"
+															className="col-span-3"
+															value={editForm.data.name}
+															onChange={(e) =>
+																editForm.setData("name", e.target.value)
+															}
+															maxLength={75}
+															required
+														/>
+														{editForm.errors.name && (
+															<p className="text-red-500 text-sm col-span-3 col-start-2">
+																{editForm.errors.name}
+															</p>
+														)}
+													</div>
+
+													<div className="grid grid-cols-4 gap-4">
+														<Label
+															htmlFor="edit-description"
+															className="text-right mt-2"
+														>
+															Descripción
+														</Label>
+														<Textarea
+															id="edit-description"
+															value={editForm.data.description}
+															maxLength={255}
+															className="col-span-3 h-32"
+															onChange={(e) =>
+																editForm.setData("description", e.target.value)
+															}
+														/>
+														{editForm.errors.description && (
+															<p className="text-red-500 text-sm col-span-3 col-start-2">
+																{editForm.errors.description}
+															</p>
+														)}
+													</div>
+													<div className="grid grid-cols-4 items-center gap-4">
+														<Label htmlFor="edit-status" className="text-right">
+															Estado
+														</Label>
+														<Switch
+															id="edit-status"
+															checked={editForm.data.status}
+															onCheckedChange={(checked) =>
+																editForm.setData("status", checked)
+															}
+														/>
+													</div>
+												</div>
+											</EditItemModal>
+											<Button
+												variant="destructive"
+												onClick={() => handleDeleteCategory(category.id)}
+											>
 												<Trash2 size={16} /> Eliminar
 											</Button>
 										</TableCell>
