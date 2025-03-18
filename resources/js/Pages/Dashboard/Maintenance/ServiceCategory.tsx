@@ -1,16 +1,9 @@
 import { AddItemModal } from "@/Components/AddItemModal";
 import { EditItemModal } from "@/Components/EditItemModal";
+import { TablePagination } from "@/Components/TablePagination";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
-} from "@/Components/ui/pagination";
 import { Switch } from "@/Components/ui/switch";
 import {
 	Table,
@@ -22,10 +15,12 @@ import {
 } from "@/Components/ui/table";
 import { Textarea } from "@/Components/ui/textarea";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useDeleteData } from "@/hooks/use-delete-data";
+import { useFetchData } from "@/hooks/use-fetch-data";
+import { useInsertData } from "@/hooks/use-insert-data";
+import { useUpdateData } from "@/hooks/use-update-data";
+import { Head } from "@inertiajs/react";
+import { Loader2, Trash2 } from "lucide-react";
 
 interface ServiceCategory {
 	id: number;
@@ -35,116 +30,36 @@ interface ServiceCategory {
 }
 
 export default function ServiceCategory() {
+	const currentRoute = "dashboard.maintenance.service-category";
 	// Obtenemos las categorías de servicios
-	const {
-		categories = { data: [], links: [], current_page: 1, last_page: 1 },
-		flash,
-	} = usePage().props as unknown as {
-		categories: {
-			data: ServiceCategory[];
-			links: { url: string | null; label: string; active: boolean }[];
-			current_page: number;
-			last_page: number;
-		};
-		flash?: { success?: string; error?: string };
-	};
-
-	//Manejar paginación
-	const handlePageChange = (url: string | null) => {
-		if (url) {
-			router.visit(url);
-		}
-	};
-
-	const formatLinkLabel = (label: string): string => {
-		return label.replace(/&laquo;|&raquo;/g, "");
-	};
-
-	const pageLinks = categories.links.filter(
-		(link) =>
-			!link.label.includes("&laquo;") && !link.label.includes("&raquo;"),
-	);
-	const prevLink = categories.links.find((link) =>
-		link.label.includes("&laquo;"),
-	);
-
-	const nextLink = categories.links.find((link) =>
-		link.label.includes("&raquo;"),
-	);
-
-	// Mostrar mensajes flash
-	useEffect(() => {
-		if (flash?.success) toast.success(flash.success);
-		if (flash?.error) toast.error(flash.error);
-	}, [flash]);
-
-	// Agregar un nuevo servicio
-	const { data, setData, post, processing, errors, reset } = useForm({
-		name: "",
-		description: "",
-		status: true,
-	});
-
-	const handleSubmitNewService = () => {
-		post(route("dashboard.maintenance.service-category.store"), {
-			preserveScroll: true,
-			onSuccess: () => reset(),
-		});
-	};
+	const { categories, flash } = useFetchData<ServiceCategory>();
 
 	// Eliminar una categoría de servicio
-	const handleDeleteCategory = (id: number) => {
-		if (
-			confirm(
-				"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminara todos los servicios asociados a esta categoría.",
-			)
-		) {
-			router.delete(
-				route("dashboard.maintenance.service-category.destroy", {
-					serviceCategory: id,
-				}),
-			);
-		}
-	};
+	const { deleteData, isDeleting } = useDeleteData();
 
-	// Actualizar Item
-	const [editingCategory, setEditingCategory] =
-		useState<ServiceCategory | null>(null);
-	const editForm = useForm<{
-		name: string;
-		description: string;
-		status: boolean;
-	}>({
+	// Agregar una nueva categoría de servicio
+	const { data, setData, insertData, processing, errors } = useInsertData(
+		currentRoute,
+		{
+			name: "",
+			description: "",
+			status: true,
+		},
+	);
+
+	// Actualizar una categoría de servicio
+	const {
+		editData,
+		setEditData,
+		editErrors,
+		updating,
+		initializeForm,
+		updateData,
+	} = useUpdateData({
 		name: "",
 		description: "",
 		status: true,
 	});
-
-	const initializeEditForm = (category: ServiceCategory) => {
-		setEditingCategory(category);
-		editForm.setData({
-			name: category.name,
-			description: category.description || "",
-			status: category.status,
-		});
-	};
-
-	const handleSubmitEditService = () => {
-		if (!editingCategory) return;
-
-		editForm.patch(
-			route("dashboard.maintenance.service-category.update", {
-				serviceCategory: editingCategory.id,
-			}),
-			{
-				preserveScroll: true,
-				onSuccess: () => {
-					setEditingCategory(null);
-					editForm.reset();
-				},
-			},
-		);
-	};
 
 	return (
 		<AuthenticatedLayout>
@@ -158,7 +73,7 @@ export default function ServiceCategory() {
 						title="Agregar Servicio"
 						triggerTitle="Categoría de Servicio"
 						description="Agrega una nueva categoría de servicio proporcionando su nombre y una breve descripción."
-						onSubmit={handleSubmitNewService}
+						onSubmit={insertData}
 						processing={processing}
 					>
 						<div className="grid gap-4 py-4">
@@ -230,10 +145,12 @@ export default function ServiceCategory() {
 											<EditItemModal
 												title="Editar - Categoria de Servicio"
 												triggerTitle="Editar"
-												description="Edita esta categoria de servicio modificando ya sea su nombre y/o descripción. O da de baja esta categoria si ya no es necesaria actualizando su estado."
-												onSubmit={handleSubmitEditService}
-												processing={editForm.processing}
-												onTriggerClick={() => initializeEditForm(category)}
+												description="Edita esta categoria de servicio modificando su nombre y/o descripción."
+												onSubmit={updateData(currentRoute, {
+													id: category.id,
+												})}
+												processing={updating}
+												onTriggerClick={() => initializeForm(category)}
 											>
 												<div className="grid gap-4 py-4">
 													<div className="grid grid-cols-4 items-center gap-4">
@@ -244,16 +161,16 @@ export default function ServiceCategory() {
 															id="edit-name"
 															type="text"
 															className="col-span-3"
-															value={editForm.data.name}
+															value={editData.name}
 															onChange={(e) =>
-																editForm.setData("name", e.target.value)
+																setEditData("name", e.target.value)
 															}
 															maxLength={75}
 															required
 														/>
-														{editForm.errors.name && (
+														{editErrors.name && (
 															<p className="text-red-500 text-sm col-span-3 col-start-2">
-																{editForm.errors.name}
+																{editErrors.name}
 															</p>
 														)}
 													</div>
@@ -267,38 +184,53 @@ export default function ServiceCategory() {
 														</Label>
 														<Textarea
 															id="edit-description"
-															value={editForm.data.description}
+															value={editData.description}
 															maxLength={255}
 															className="col-span-3 h-32"
 															onChange={(e) =>
-																editForm.setData("description", e.target.value)
+																setEditData("description", e.target.value)
 															}
 														/>
-														{editForm.errors.description && (
+														{editErrors.description && (
 															<p className="text-red-500 text-sm col-span-3 col-start-2">
-																{editForm.errors.description}
+																{editErrors.description}
 															</p>
 														)}
 													</div>
+
 													<div className="grid grid-cols-4 items-center gap-4">
 														<Label htmlFor="edit-status" className="text-right">
 															Estado
 														</Label>
 														<Switch
 															id="edit-status"
-															checked={editForm.data.status}
+															checked={editData.status}
 															onCheckedChange={(checked) =>
-																editForm.setData("status", checked)
+																setEditData("status", checked)
 															}
 														/>
 													</div>
 												</div>
 											</EditItemModal>
+											{/* Eliminar Registro - INICIO */}
 											<Button
 												variant="destructive"
-												onClick={() => handleDeleteCategory(category.id)}
+												id={`btn-delete-${category.id}`}
+												disabled={isDeleting(category.id)}
+												onClick={() =>
+													deleteData(
+														category.id,
+														currentRoute,
+														"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminará todos los servicios asociados a esta categoría.",
+													)
+												}
 											>
-												<Trash2 size={16} /> Eliminar
+												{isDeleting(category.id) ? (
+													<Loader2 className="animate-spin" />
+												) : (
+													<Trash2 size={16} />
+												)}
+												{isDeleting(category.id) ? "Eliminar" : "Eliminar"}
 											</Button>
 										</TableCell>
 									</TableRow>
@@ -315,54 +247,10 @@ export default function ServiceCategory() {
 					{/* Componente de paginación */}
 					{categories.last_page > 1 && (
 						<div className="flex justify-center mt-4">
-							<Pagination>
-								<PaginationContent>
-									<PaginationItem>
-										<PaginationPrevious
-											label="Anterior"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												handlePageChange(prevLink?.url || null);
-											}}
-											className={
-												!prevLink?.url
-													? "pointer-events-none opacity-50"
-													: "cursor-pointer"
-											}
-										/>
-									</PaginationItem>
-									{pageLinks.map((link) => (
-										<PaginationItem key={link.label}>
-											<PaginationLink
-												href="#"
-												onClick={(e) => {
-													e.preventDefault();
-													handlePageChange(link.url);
-												}}
-												isActive={link.active}
-											>
-												{formatLinkLabel(link.label)}
-											</PaginationLink>
-										</PaginationItem>
-									))}
-									<PaginationItem>
-										<PaginationNext
-											label="Siguiente"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												handlePageChange(nextLink?.url || null);
-											}}
-											className={
-												!nextLink?.url
-													? "pointer-events-none opacity-50"
-													: "cursor-pointer"
-											}
-										/>
-									</PaginationItem>
-								</PaginationContent>
-							</Pagination>
+							<TablePagination
+								links={categories.links}
+								lastPage={categories.last_page}
+							/>
 						</div>
 					)}
 				</div>

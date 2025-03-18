@@ -1,16 +1,9 @@
 import { AddItemModal } from "@/Components/AddItemModal";
 import { EditItemModal } from "@/Components/EditItemModal";
+import { TablePagination } from "@/Components/TablePagination";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import { Label } from "@/Components/ui/label";
-import {
-	Pagination,
-	PaginationContent,
-	PaginationItem,
-	PaginationLink,
-	PaginationNext,
-	PaginationPrevious,
-} from "@/Components/ui/pagination";
 import { Switch } from "@/Components/ui/switch";
 import {
 	Table,
@@ -22,10 +15,12 @@ import {
 } from "@/Components/ui/table";
 import { Textarea } from "@/Components/ui/textarea";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router, useForm, usePage } from "@inertiajs/react";
-import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useDeleteData } from "@/hooks/use-delete-data";
+import { useFetchData } from "@/hooks/use-fetch-data";
+import { useInsertData } from "@/hooks/use-insert-data";
+import { useUpdateData } from "@/hooks/use-update-data";
+import { Head } from "@inertiajs/react";
+import { Loader2, Trash2 } from "lucide-react";
 
 interface ExpenseCategory {
 	id: number;
@@ -35,115 +30,34 @@ interface ExpenseCategory {
 }
 
 export default function ExpenseCategory() {
+	const currentRoute = "dashboard.maintenance.expense-category";
+
+	const { categories, flash } = useFetchData<ExpenseCategory>();
+
+	const { data, setData, insertData, processing, errors } = useInsertData(
+		currentRoute,
+		{
+			name: "",
+			description: "",
+			status: true,
+		},
+	);
+
 	const {
-		categories = { data: [], links: [], current_page: 1, last_page: 1 },
-		flash,
-	} = usePage().props as unknown as {
-		categories: {
-			data: ExpenseCategory[];
-			links: { url: string | null; label: string; active: boolean }[];
-			current_page: number;
-			last_page: number;
-		};
-		flash?: { success?: string; error?: string };
-	};
-
-	//Manejar paginación
-	const handlePageChange = (url: string | null) => {
-		if (url) {
-			router.visit(url);
-		}
-	};
-
-	const formatLinkLabel = (label: string): string => {
-		return label.replace(/&laquo;|&raquo;/g, "");
-	};
-
-	const pageLinks = categories.links.filter(
-		(link) =>
-			!link.label.includes("&laquo;") && !link.label.includes("&raquo;"),
-	);
-	const prevLink = categories.links.find((link) =>
-		link.label.includes("&laquo;"),
-	);
-
-	const nextLink = categories.links.find((link) =>
-		link.label.includes("&raquo;"),
-	);
-
-	// Mostrar mensajes flash
-	useEffect(() => {
-		if (flash?.success) toast.success(flash.success);
-		if (flash?.error) toast.error(flash.error);
-	}, [flash]);
-
-	// Agregar
-	const { data, setData, post, processing, errors, reset } = useForm({
+		editData,
+		setEditData,
+		editErrors,
+		updating,
+		initializeForm,
+		updateData,
+	} = useUpdateData({
 		name: "",
 		description: "",
 		status: true,
 	});
 
-	const handleSubmitNewExpense = () => {
-		post(route("dashboard.maintenance.expense-category.store"), {
-			preserveScroll: true,
-			onSuccess: () => reset(),
-		});
-	};
+	const { deleteData, isDeleting } = useDeleteData();
 
-	// Eliminar una categoría
-	const handleDeleteCategory = (id: number) => {
-		if (
-			confirm(
-				"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminara todos los gastos asociados a esta categoría. Esta acción no se puede deshacer. Si unicamente deseas dar de baja la categoría, puedes hacerlo desde la opción de editar.",
-			)
-		) {
-			router.delete(
-				route("dashboard.maintenance.expense-category.destroy", {
-					expenseCategory: id,
-				}),
-			);
-		}
-	};
-
-	// Actualizar Item
-	const [editingCategory, setEditingCategory] =
-		useState<ExpenseCategory | null>(null);
-	const editForm = useForm<{
-		name: string;
-		description: string;
-		status: boolean;
-	}>({
-		name: "",
-		description: "",
-		status: true,
-	});
-
-	const initializeEditForm = (category: ExpenseCategory) => {
-		setEditingCategory(category);
-		editForm.setData({
-			name: category.name,
-			description: category.description || "",
-			status: category.status,
-		});
-	};
-
-	const handleSubmitEditExpense = () => {
-		if (!editingCategory) return;
-
-		editForm.patch(
-			route("dashboard.maintenance.expense-category.update", {
-				expenseCategory: editingCategory.id,
-			}),
-			{
-				preserveScroll: true,
-				onSuccess: () => {
-					setEditingCategory(null);
-					editForm.reset();
-				},
-			},
-		);
-	};
 	return (
 		<AuthenticatedLayout>
 			<Head title="Maintenance" />
@@ -155,7 +69,7 @@ export default function ExpenseCategory() {
 						title="Agregar Categoría de Gasto"
 						triggerTitle="Categoría de Gasto"
 						description="Agrega una nueva categoría de gasto proporcionando su nombre y una breve descripción."
-						onSubmit={handleSubmitNewExpense}
+						onSubmit={insertData}
 						processing={processing}
 					>
 						<div className="grid gap-4 py-4">
@@ -227,9 +141,11 @@ export default function ExpenseCategory() {
 												title="Editar - Categoria de Servicio"
 												triggerTitle="Editar"
 												description="Edita esta categoria de servicio modificando ya sea su nombre y/o descripción. O da de baja esta categoria si ya no es necesaria actualizando su estado."
-												onSubmit={handleSubmitEditExpense}
-												processing={editForm.processing}
-												onTriggerClick={() => initializeEditForm(category)}
+												onSubmit={updateData(currentRoute, {
+													id: category.id,
+												})}
+												processing={updating}
+												onTriggerClick={() => initializeForm(category)}
 											>
 												<div className="grid gap-4 py-4">
 													<div className="grid grid-cols-4 items-center gap-4">
@@ -240,16 +156,16 @@ export default function ExpenseCategory() {
 															id="edit-name"
 															type="text"
 															className="col-span-3"
-															value={editForm.data.name}
+															value={editData.name}
 															onChange={(e) =>
-																editForm.setData("name", e.target.value)
+																setEditData("name", e.target.value)
 															}
 															maxLength={75}
 															required
 														/>
-														{editForm.errors.name && (
+														{editErrors.name && (
 															<p className="text-red-500 text-sm col-span-3 col-start-2">
-																{editForm.errors.name}
+																{editErrors.name}
 															</p>
 														)}
 													</div>
@@ -263,16 +179,16 @@ export default function ExpenseCategory() {
 														</Label>
 														<Textarea
 															id="edit-description"
-															value={editForm.data.description}
+															value={editData.description}
 															maxLength={255}
 															className="col-span-3 h-32"
 															onChange={(e) =>
-																editForm.setData("description", e.target.value)
+																setEditData("description", e.target.value)
 															}
 														/>
-														{editForm.errors.description && (
+														{editErrors.description && (
 															<p className="text-red-500 text-sm col-span-3 col-start-2">
-																{editForm.errors.description}
+																{editErrors.description}
 															</p>
 														)}
 													</div>
@@ -282,19 +198,33 @@ export default function ExpenseCategory() {
 														</Label>
 														<Switch
 															id="edit-status"
-															checked={editForm.data.status}
+															checked={editData.status}
 															onCheckedChange={(checked) =>
-																editForm.setData("status", checked)
+																setEditData("status", checked)
 															}
 														/>
 													</div>
 												</div>
 											</EditItemModal>
+											{/* Eliminar Registro */}
 											<Button
 												variant="destructive"
-												onClick={() => handleDeleteCategory(category.id)}
+												id={`btn-delete-${category.id}`}
+												disabled={isDeleting(category.id)}
+												onClick={() =>
+													deleteData(
+														category.id,
+														currentRoute,
+														"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminará todos los servicios asociados a esta categoría.",
+													)
+												}
 											>
-												<Trash2 size={16} /> Eliminar
+												{isDeleting(category.id) ? (
+													<Loader2 className="animate-spin" />
+												) : (
+													<Trash2 size={16} />
+												)}
+												{isDeleting(category.id) ? "Eliminar" : "Eliminar"}
 											</Button>
 										</TableCell>
 									</TableRow>
@@ -310,54 +240,10 @@ export default function ExpenseCategory() {
 					</Table>
 					{categories.last_page > 1 && (
 						<div className="flex justify-center mt-4">
-							<Pagination>
-								<PaginationContent>
-									<PaginationItem>
-										<PaginationPrevious
-											label="Anterior"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												handlePageChange(prevLink?.url || null);
-											}}
-											className={
-												!prevLink?.url
-													? "pointer-events-none opacity-50"
-													: "cursor-pointer"
-											}
-										/>
-									</PaginationItem>
-									{pageLinks.map((link) => (
-										<PaginationItem key={link.label}>
-											<PaginationLink
-												href="#"
-												onClick={(e) => {
-													e.preventDefault();
-													handlePageChange(link.url);
-												}}
-												isActive={link.active}
-											>
-												{formatLinkLabel(link.label)}
-											</PaginationLink>
-										</PaginationItem>
-									))}
-									<PaginationItem>
-										<PaginationNext
-											label="Siguiente"
-											href="#"
-											onClick={(e) => {
-												e.preventDefault();
-												handlePageChange(nextLink?.url || null);
-											}}
-											className={
-												!nextLink?.url
-													? "pointer-events-none opacity-50"
-													: "cursor-pointer"
-											}
-										/>
-									</PaginationItem>
-								</PaginationContent>
-							</Pagination>
+							<TablePagination
+								links={categories.links}
+								lastPage={categories.last_page}
+							/>
 						</div>
 					)}
 				</div>

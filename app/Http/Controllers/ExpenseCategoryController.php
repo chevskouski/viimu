@@ -10,7 +10,7 @@ class ExpenseCategoryController extends Controller
 {
     public function index()
     {
-        $categories = ExpenseCategory::orderBy('id', 'desc')->paginate(8);
+        $categories = ExpenseCategory::orderBy('id', 'asc')->paginate(8);
 
         return Inertia::render('Dashboard/Maintenance/ExpenseCategory', [
             'categories' => $categories,

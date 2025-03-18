@@ -62,7 +62,11 @@ const menuItems = [
 		title: "Mantenimientos",
 		icon: Command,
 		subItems: [
-			{ label: "Servicios", href: "/dashboard/maintenance", icon: Settings },
+			{
+				label: "Servicios",
+				href: "/dashboard/maintenance/services",
+				icon: Settings,
+			},
 			{
 				label: "Categorías de Servicios",
 				href: "/dashboard/maintenance/service-category",
@@ -73,7 +77,11 @@ const menuItems = [
 				href: "/dashboard/maintenance/expense-category",
 				icon: Settings,
 			},
-			{ label: "Cuentas Bancarias", href: "/dashboard/ddf", icon: Settings },
+			{
+				label: "Cuentas Bancarias",
+				href: "/dashboard/maintenance/bank-account",
+				icon: Settings,
+			},
 		],
 	},
 ];

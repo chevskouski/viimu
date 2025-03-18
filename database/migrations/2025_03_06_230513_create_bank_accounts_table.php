@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('bank_accounts', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', ['Industrial', 'Banrural', 'BAC', 'Promerica']);
+            $table->string('name');
             $table->string('account_number');
-            $table->string('currency');
+            $table->enum('currency', ['GTQ', 'USD', 'EUR']);
             $table->enum('type', ['savings', 'monetary']);
             $table->boolean('status')->default(true);
             $table->timestamps();
