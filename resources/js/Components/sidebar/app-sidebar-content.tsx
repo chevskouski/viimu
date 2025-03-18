@@ -64,11 +64,15 @@ const menuItems = [
 		subItems: [
 			{ label: "Servicios", href: "/dashboard/maintenance", icon: Settings },
 			{
-				label: "Tipo de Servicios",
+				label: "Categorías de Servicios",
 				href: "/dashboard/maintenance/service-category",
 				icon: Settings,
 			},
-			{ label: "Categoría de Gastos", href: "/dashboard/d", icon: Settings },
+			{
+				label: "Categoría de Gastos",
+				href: "/dashboard/maintenance/expense-category",
+				icon: Settings,
+			},
 			{ label: "Cuentas Bancarias", href: "/dashboard/ddf", icon: Settings },
 		],
 	},

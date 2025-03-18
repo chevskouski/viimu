@@ -15,6 +15,10 @@ class BankAccount extends Model
         'status',
     ];
 
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
     public function payment(): HasMany
     {
         return $this->hasMany(Payment::class);

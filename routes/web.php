@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceCategoryController;
 use Illuminate\Foundation\Application;
@@ -29,6 +30,17 @@ Route::middleware('auth', 'verified')->group(function () {
         ->name('dashboard.maintenance.service-category.update');
     Route::delete('/dashboard/maintenance/service-category/{serviceCategory}', [ServiceCategoryController::class, 'destroy'])
         ->name('dashboard.maintenance.service-category.destroy');
+});
+
+Route::middleware('auth', 'verified')->group(function () {
+    Route::get('/dashboard/maintenance/expense-category', [ExpenseCategoryController::class, 'index'])
+        ->name('dashboard.maintenance.expense-category');
+    Route::post('/dashboard/maintenance/expense-category', [ExpenseCategoryController::class, 'store'])
+        ->name('dashboard.maintenance.expense-category.store');
+    Route::patch('/dashboard/maintenance/expense-category/{expenseCategory}', [ExpenseCategoryController::class, 'update'])
+        ->name('dashboard.maintenance.expense-category.update');
+    Route::delete('/dashboard/maintenance/expense-category/{expenseCategory}', [ExpenseCategoryController::class, 'destroy'])
+        ->name('dashboard.maintenance.expense-category.destroy');
 });
 
 

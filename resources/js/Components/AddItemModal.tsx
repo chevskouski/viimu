@@ -43,7 +43,7 @@ export function AddItemModal({
 					{triggerTitle}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[425px]">
+			<DialogContent className="sm:max-w-[576px]">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader>
 						<DialogTitle>{title}</DialogTitle>

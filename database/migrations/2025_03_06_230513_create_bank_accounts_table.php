@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('account_number');
             $table->string('currency');
             $table->enum('type', ['savings', 'monetary']);
-            $table->enum('status', ['active', 'inactive']);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

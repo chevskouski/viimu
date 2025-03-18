@@ -27,21 +27,20 @@ import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-interface ServiceCategory {
+interface ExpenseCategory {
 	id: number;
 	name: string;
 	description: string;
 	status: boolean;
 }
 
-export default function ServiceCategory() {
-	// Obtenemos las categorías de servicios
+export default function ExpenseCategory() {
 	const {
 		categories = { data: [], links: [], current_page: 1, last_page: 1 },
 		flash,
 	} = usePage().props as unknown as {
 		categories: {
-			data: ServiceCategory[];
+			data: ExpenseCategory[];
 			links: { url: string | null; label: string; active: boolean }[];
 			current_page: number;
 			last_page: number;
@@ -78,30 +77,30 @@ export default function ServiceCategory() {
 		if (flash?.error) toast.error(flash.error);
 	}, [flash]);
 
-	// Agregar un nuevo servicio
+	// Agregar
 	const { data, setData, post, processing, errors, reset } = useForm({
 		name: "",
 		description: "",
 		status: true,
 	});
 
-	const handleSubmitNewService = () => {
-		post(route("dashboard.maintenance.service-category.store"), {
+	const handleSubmitNewExpense = () => {
+		post(route("dashboard.maintenance.expense-category.store"), {
 			preserveScroll: true,
 			onSuccess: () => reset(),
 		});
 	};
 
-	// Eliminar una categoría de servicio
+	// Eliminar una categoría
 	const handleDeleteCategory = (id: number) => {
 		if (
 			confirm(
-				"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminara todos los servicios asociados a esta categoría.",
+				"¿Estás seguro de que quieres eliminar esta categoría? Esto eliminara todos los gastos asociados a esta categoría. Esta acción no se puede deshacer. Si unicamente deseas dar de baja la categoría, puedes hacerlo desde la opción de editar.",
 			)
 		) {
 			router.delete(
-				route("dashboard.maintenance.service-category.destroy", {
-					serviceCategory: id,
+				route("dashboard.maintenance.expense-category.destroy", {
+					expenseCategory: id,
 				}),
 			);
 		}
@@ -109,7 +108,7 @@ export default function ServiceCategory() {
 
 	// Actualizar Item
 	const [editingCategory, setEditingCategory] =
-		useState<ServiceCategory | null>(null);
+		useState<ExpenseCategory | null>(null);
 	const editForm = useForm<{
 		name: string;
 		description: string;
@@ -120,7 +119,7 @@ export default function ServiceCategory() {
 		status: true,
 	});
 
-	const initializeEditForm = (category: ServiceCategory) => {
+	const initializeEditForm = (category: ExpenseCategory) => {
 		setEditingCategory(category);
 		editForm.setData({
 			name: category.name,
@@ -129,12 +128,12 @@ export default function ServiceCategory() {
 		});
 	};
 
-	const handleSubmitEditService = () => {
+	const handleSubmitEditExpense = () => {
 		if (!editingCategory) return;
 
 		editForm.patch(
-			route("dashboard.maintenance.service-category.update", {
-				serviceCategory: editingCategory.id,
+			route("dashboard.maintenance.expense-category.update", {
+				expenseCategory: editingCategory.id,
 			}),
 			{
 				preserveScroll: true,
@@ -145,20 +144,18 @@ export default function ServiceCategory() {
 			},
 		);
 	};
-
 	return (
 		<AuthenticatedLayout>
 			<Head title="Maintenance" />
 			<div className="py-0 w-full">
 				<div className="space-y-6 sm:px-6 lg:px-8">
-					<h1 className="font-semibold text-2xl">Categorías de Servicios</h1>
+					<h1 className="font-semibold text-2xl">Categorías de Gastos</h1>
 
-					{/* Modal para agregar una nueva categoria de servicio */}
 					<AddItemModal
-						title="Agregar Servicio"
-						triggerTitle="Categoría de Servicio"
-						description="Agrega una nueva categoría de servicio proporcionando su nombre y una breve descripción."
-						onSubmit={handleSubmitNewService}
+						title="Agregar Categoría de Gasto"
+						triggerTitle="Categoría de Gasto"
+						description="Agrega una nueva categoría de gasto proporcionando su nombre y una breve descripción."
+						onSubmit={handleSubmitNewExpense}
 						processing={processing}
 					>
 						<div className="grid gap-4 py-4">
@@ -202,7 +199,6 @@ export default function ServiceCategory() {
 						</div>
 					</AddItemModal>
 
-					{/* Tabla de categorías de servicio */}
 					<Table>
 						<TableHeader>
 							<TableRow>
@@ -231,7 +227,7 @@ export default function ServiceCategory() {
 												title="Editar - Categoria de Servicio"
 												triggerTitle="Editar"
 												description="Edita esta categoria de servicio modificando ya sea su nombre y/o descripción. O da de baja esta categoria si ya no es necesaria actualizando su estado."
-												onSubmit={handleSubmitEditService}
+												onSubmit={handleSubmitEditExpense}
 												processing={editForm.processing}
 												onTriggerClick={() => initializeEditForm(category)}
 											>
@@ -312,7 +308,6 @@ export default function ServiceCategory() {
 							)}
 						</TableBody>
 					</Table>
-					{/* Componente de paginación */}
 					{categories.last_page > 1 && (
 						<div className="flex justify-center mt-4">
 							<Pagination>
