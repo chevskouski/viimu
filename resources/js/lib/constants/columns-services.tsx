@@ -11,14 +11,16 @@ import {
 import { ServiceForm } from "@/Components/molecules/service-form";
 import type { Service, ServiceCategory } from "@/lib/types/types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArchiveX, ArrowUpDown, Pencil } from "lucide-react";
+import { ArchiveRestore, ArchiveX, ArrowUpDown, Pencil } from "lucide-react";
 
 interface Props {
 	serviceCategories: ServiceCategory[];
+	areInactiveServicesData?: boolean;
 }
 
 export const ServiceTableColumns = ({
 	serviceCategories,
+	areInactiveServicesData,
 }: Props): ColumnDef<Service>[] => [
 	{
 		accessorKey: "id",
@@ -88,32 +90,65 @@ export const ServiceTableColumns = ({
 							</ServiceForm>
 						</DialogContent>
 					</Dialog>
-					<Dialog>
-						<DialogTrigger asChild>
-							<ArchiveX size={16} className="cursor-pointer text-red-500" />
-						</DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Dar de Baja un Servicio</DialogTitle>
-								<DialogDescription>
-									Dar de baja servicio implica deshabilitar o desactivar un
-									servicio dentro del sistema, evitando que esté disponible para
-									su uso o contratación.
-								</DialogDescription>
-							</DialogHeader>
-							<ServiceForm
-								serviceCategories={serviceCategories}
-								selectedService={row.original}
-								type="Delete"
-							>
-								<DialogClose asChild>
-									<Button type="button" variant="secondary">
-										Cerrar
-									</Button>
-								</DialogClose>
-							</ServiceForm>
-						</DialogContent>
-					</Dialog>
+					{areInactiveServicesData ? (
+						<Dialog>
+							<DialogTrigger asChild>
+								<ArchiveRestore
+									size={16}
+									className="cursor-pointer text-green-500"
+								/>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Restaurar un Servicio</DialogTitle>
+									<DialogDescription>
+										Permite reactivar un servicio que fue archivado o
+										deshabilitado previamente. Al restaurarlo, el servicio
+										volverá a estar disponible para su uso con la configuración
+										anterior, salvo que se realicen cambios adicionales.
+									</DialogDescription>
+								</DialogHeader>
+								<ServiceForm
+									serviceCategories={serviceCategories}
+									selectedService={row.original}
+									type="Restore"
+								>
+									<DialogClose asChild>
+										<Button type="button" variant="secondary">
+											Cerrar
+										</Button>
+									</DialogClose>
+								</ServiceForm>
+							</DialogContent>
+						</Dialog>
+					) : (
+						<Dialog>
+							<DialogTrigger asChild>
+								<ArchiveX size={16} className="cursor-pointer text-red-500" />
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Dar de Baja un Servicio</DialogTitle>
+									<DialogDescription>
+										Dar de baja servicio implica deshabilitar o desactivar un
+										servicio dentro del sistema, evitando que esté disponible
+										para su uso o contratación.
+									</DialogDescription>
+								</DialogHeader>
+								<ServiceForm
+									serviceCategories={serviceCategories}
+									selectedService={row.original}
+									type="Delete"
+								>
+									<DialogClose asChild>
+										<Button type="button" variant="secondary">
+											Cerrar
+										</Button>
+									</DialogClose>
+								</ServiceForm>
+							</DialogContent>
+						</Dialog>
+					)}
 				</div>
 			);
 		},

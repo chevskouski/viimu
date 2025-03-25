@@ -25,13 +25,14 @@ const btnTitles: Record<string, string> = {
 	Delete: "Archivar",
 	Update: "Actualizar",
 	Insert: "Ingresar",
+	Restore: "Restaurar",
 };
 
 interface Props {
 	serviceCategories: ServiceCategory[];
 	selectedService?: Service;
 	children?: React.ReactNode;
-	type: "Insert" | "Update" | "Delete";
+	type: "Insert" | "Update" | "Delete" | "Restore";
 }
 
 export function ServiceForm({
@@ -93,13 +94,18 @@ export function ServiceForm({
 				data.status = false;
 				onSubmitUpdate(data, selectedService.id);
 			};
+		} else if (type === "Restore" && selectedService) {
+			submitFunction = (data) => {
+				data.status = true;
+				onSubmitUpdate(data, selectedService.id);
+			};
 		}
 
 		form.handleSubmit(submitFunction)(e);
 	};
 
 	// Propiedades del form
-	const isDisabled = type === "Delete";
+	const isDisabled = type === "Delete" || type === "Restore";
 	const btnTitle = btnTitles[type];
 	const btnVariant = type === "Delete" ? "destructive" : "default";
 
