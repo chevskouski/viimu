@@ -14,7 +14,7 @@ class ServiceController extends Controller
         $services = Service::with('serviceCategory')
             ->where('status', true)
             ->orderBy('id', 'asc')
-            ->paginate(100);
+            ->get();
 
         $inactiveServices = Service::with('serviceCategory')
             ->where('status', false)
