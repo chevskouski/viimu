@@ -20,26 +20,36 @@ class BankAccountController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:75|unique:bank_accounts',
-            'account_number' => 'required|string|max:124|unique:bank_accounts',
-            'currency' => ['required', Rule::in(['GTQ', 'USD', 'EUR'])],
-            'type' => ['required', Rule::in(['savings', 'monetary'])],
-            'status' => 'boolean'
-        ]);
+        try {
+            $validate = $request->validate([
+                'name' => 'required|string|max:75|unique:bank_accounts',
+                'account_number' => 'required|string|max:124|unique:bank_accounts',
+                'currency' => ['required', Rule::in(['GTQ', 'USD', 'EUR'])],
+                'type' => ['required', Rule::in(['savings', 'monetary'])],
+                'open_balance' => 'required|numeric',
+                'status' => 'boolean'
+            ]);
 
-        $category = BankAccount::create([
-            'name' => $request->name,
-            'account_number' => $request->account_number,
-            'currency' => $request->currency,
-            'type' => $request->type,
-            'status' => $request->status
-        ]);
-
-        return back()->with([
-            'success' => 'ACCOUNT added successfully.',
-            'category' => $category,
-        ]);
+            $category = BankAccount::create([
+                'name' => $request->name,
+                'account_number' => $request->account_number,
+                'currency' => $request->currency,
+                'type' => $request->type,
+                'open_balance' => $request->open_balance,
+                'status' => $request->status
+            ]);
+    
+            return redirect()->back()->with([
+                'success' => 'ACCOUNT added successfully.',
+                'category' => $category,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong. Please try again.',
+                'error' => $e->getMessage(),
+            ], 500); 
+        }   
     }
 
     public function update(Request $request, BankAccount $bankAccount)
@@ -49,6 +59,7 @@ class BankAccountController extends Controller
             'account_number' => 'required|string|max:124|unique:bank_accounts',
             'currency' => ['required', Rule::in(['GTQ', 'USD', 'EUR'])],
             'type' => ['required', Rule::in(['savings', 'monetary'])],
+            'open_balance' => 'required|numeric',
             'status' => 'boolean'
         ]);
         

@@ -1,10 +1,10 @@
 import { AddItemModal } from "@/Components/AddItemModal";
 import { EditItemModal } from "@/Components/EditItemModal";
 import { TablePagination } from "@/Components/TablePagination";
-import { Button } from "@/Components/ui/button";
-import { Input } from "@/Components/ui/input";
-import { Label } from "@/Components/ui/label";
-import { Switch } from "@/Components/ui/switch";
+import { Button } from "@/Components/atoms/button";
+import { Input } from "@/Components/atoms/input";
+import { Label } from "@/Components/atoms/label";
+import { Switch } from "@/Components/atoms/switch";
 import {
 	Table,
 	TableBody,
@@ -12,8 +12,8 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "@/Components/ui/table";
-import { Textarea } from "@/Components/ui/textarea";
+} from "@/Components/atoms/table";
+import { Textarea } from "@/Components/atoms/textarea";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { useDeleteData } from "@/hooks/use-delete-data";
 import { useFetchData } from "@/hooks/use-fetch-data";

@@ -1,4 +1,3 @@
-import { AppSidebar } from "@/Components/sidebar/app-sidebar";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -6,10 +5,11 @@ import {
 	BreadcrumbList,
 	BreadcrumbPage,
 	BreadcrumbSeparator,
-} from "@/Components/ui/breadcrumb";
-import { Separator } from "@/Components/ui/separator";
-import { SidebarProvider, SidebarTrigger } from "@/Components/ui/sidebar";
-import { Toaster } from "@/Components/ui/sonner";
+} from "@/Components/atoms/breadcrumb";
+import { Separator } from "@/Components/atoms/separator";
+import { SidebarProvider, SidebarTrigger } from "@/Components/atoms/sidebar";
+import { Toaster } from "@/Components/atoms/sonner";
+import { AppSidebar } from "@/Components/sidebar/app-sidebar";
 import { usePage } from "@inertiajs/react";
 import React, { type PropsWithChildren, type ReactNode, useMemo } from "react";
 

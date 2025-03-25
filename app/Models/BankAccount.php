@@ -12,6 +12,7 @@ class BankAccount extends Model
         'account_number',
         'currency',
         'type',
+        'open_balance',
         'status',
     ];
 

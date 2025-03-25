@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/Components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/Components/atoms/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -7,13 +7,13 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/Components/ui/dropdown-menu";
+} from "@/Components/atoms/dropdown-menu";
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	useSidebar,
-} from "@/Components/ui/sidebar";
+} from "@/Components/atoms/sidebar";
 import { Link } from "@inertiajs/react";
 import { BadgeCheck, Bell, LogOut, UserCog } from "lucide-react";
 

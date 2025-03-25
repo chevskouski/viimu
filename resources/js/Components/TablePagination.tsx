@@ -7,7 +7,7 @@ import {
 	PaginationLink,
 	PaginationNext,
 	PaginationPrevious,
-} from "@/Components/ui/pagination";
+} from "@/Components/atoms/pagination";
 
 interface PaginationLinkProps {
 	url: string | null;

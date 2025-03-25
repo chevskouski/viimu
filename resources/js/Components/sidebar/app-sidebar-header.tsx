@@ -2,7 +2,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
-} from "@/Components/ui/sidebar";
+} from "@/Components/atoms/sidebar";
 import { useAppInfo } from "@/hooks/use-app-info";
 import Logo from "../../../assets/viimu-logo-blanco.webp";
 

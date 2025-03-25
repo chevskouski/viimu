@@ -1,4 +1,4 @@
-import { Button } from "@/Components/ui/button";
+import { Button } from "@/Components/atoms/button";
 import {
 	Dialog,
 	DialogContent,
@@ -7,7 +7,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/Components/ui/dialog";
+} from "@/Components/atoms/dialog";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
 

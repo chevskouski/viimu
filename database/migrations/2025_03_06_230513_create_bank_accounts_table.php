@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('account_number');
             $table->enum('currency', ['GTQ', 'USD', 'EUR']);
             $table->enum('type', ['savings', 'monetary']);
+            $table->double('open_balance', 10, 2);
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

@@ -5,7 +5,7 @@ import {
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarHeader,
-} from "@/Components/ui/sidebar";
+} from "@/Components/atoms/sidebar";
 import { usePage } from "@inertiajs/react";
 import { AppSidebarContent } from "./app-sidebar-content";
 import { NavUser } from "./app-sidebar-footer";

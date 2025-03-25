@@ -2,14 +2,14 @@ import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from "@/Components/ui/collapsible";
+} from "@/Components/atoms/collapsible";
 import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
 	SidebarMenuSub,
 	SidebarMenuSubItem,
-} from "@/Components/ui/sidebar";
+} from "@/Components/atoms/sidebar";
 import { usePage } from "@inertiajs/react";
 import {
 	BarChart2,
