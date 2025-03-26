@@ -1,5 +1,5 @@
 import { DataTable } from "@/Components/molecules/data-table";
-import { BankAccountsTableColumns } from "@/lib/constants/columns-bank-accounts";
+import { BankAccountsTableColumns } from "@/lib/constants/columnNames/columns-bank-accounts";
 import type { BankAccout } from "@/lib/types/types";
 
 interface Props {

@@ -1,5 +1,5 @@
 import { DataTable } from "@/Components/molecules/data-table";
-import { ExpenseCategoriesTableColumns } from "@/lib/constants/columns-expense-categories";
+import { ExpenseCategoriesTableColumns } from "@/lib/constants/columnNames/columns-expense-categories";
 import type { ExpenseCategory } from "@/lib/types/types";
 
 interface Props {

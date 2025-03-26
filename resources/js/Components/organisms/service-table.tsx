@@ -1,5 +1,5 @@
 import { DataTable } from "@/Components/molecules/data-table";
-import { ServiceTableColumns } from "@/lib/constants/columns-services";
+import { ServiceTableColumns } from "@/lib/constants/columnNames/columns-services";
 import type { Service, ServiceCategory } from "@/lib/types/types";
 
 interface Props {
