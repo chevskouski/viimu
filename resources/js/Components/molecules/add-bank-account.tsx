@@ -9,31 +9,31 @@ import {
 	DialogTrigger,
 } from "@/Components/atoms/dialog";
 import { Plus } from "lucide-react";
-import { ExpenseCategoriesForm } from "./expense-category-form";
+import { BankAccoutForm } from "./bank-account-form";
 
-export function AddExpenseCategory() {
+export function AddBankAccount() {
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
 				<Button>
-					<Plus /> Nueva Categoría de Gasto
+					<Plus /> Nueva Cuenta
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Agrega una nueva Categoría de Gasto</DialogTitle>
+					<DialogTitle>Agrega una nueva Cuenta</DialogTitle>
 					<DialogDescription>
-						Crea y personaliza una Categoría de Gasto. Poporcionando su nombre y
-						descripción.
+						Crea una cuenta Poporcionando su nombre, identificador, moneda, tipo
+						de cuenta y balance inicial.
 					</DialogDescription>
 				</DialogHeader>
-				<ExpenseCategoriesForm type="Insert">
+				<BankAccoutForm type="Insert">
 					<DialogClose asChild>
 						<Button type="button" variant="secondary">
 							Cerrar
 						</Button>
 					</DialogClose>
-				</ExpenseCategoriesForm>
+				</BankAccoutForm>
 			</DialogContent>
 		</Dialog>
 	);

@@ -1,3 +1,13 @@
+interface BankAccout {
+	id: number;
+	name: string;
+	account_number: string;
+	currency: string;
+	type: string;
+	open_balance: number;
+	status: boolean;
+}
+
 export interface ExpenseCategory {
 	id: number;
 	name: string;

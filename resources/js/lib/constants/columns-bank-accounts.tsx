@@ -8,18 +8,18 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/Components/atoms/dialog";
-import { ExpenseCategoriesForm } from "@/Components/molecules/expense-category-form";
-import type { ExpenseCategory } from "@/lib/types/types";
+import { BankAccoutForm } from "@/Components/molecules/bank-account-form";
+import type { BankAccout } from "@/lib/types/types";
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArchiveRestore, ArchiveX, ArrowUpDown, Pencil } from "lucide-react";
 
 interface Props {
-	areInactiveExpenseCategoriesData?: boolean;
+	areInactiveBankAccountsData?: boolean;
 }
 
-export const ExpenseCategoriesTableColumns = ({
-	areInactiveExpenseCategoriesData,
-}: Props): ColumnDef<ExpenseCategory>[] => [
+export const BankAccountsTableColumns = ({
+	areInactiveBankAccountsData,
+}: Props): ColumnDef<BankAccout>[] => [
 	{
 		accessorKey: "id",
 		header: "ID",
@@ -39,8 +39,20 @@ export const ExpenseCategoriesTableColumns = ({
 		},
 	},
 	{
-		accessorKey: "description",
-		header: "DESCRIPCIÓN",
+		accessorKey: "account_number",
+		header: "IDENTIFICADOR",
+	},
+	{
+		accessorKey: "currency",
+		header: "MONEDA",
+	},
+	{
+		accessorKey: "type",
+		header: "TIPO",
+	},
+	{
+		accessorKey: "open_balance",
+		header: "BALANCE",
 	},
 	{
 		accessorKey: "status",
@@ -59,25 +71,19 @@ export const ExpenseCategoriesTableColumns = ({
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>Actualiza una Categoría de Gastos</DialogTitle>
-								<DialogDescription>
-									Personaliza una Categoría de Gastos, poporcionando su nombre y
-									descripción.
-								</DialogDescription>
+								<DialogTitle>Actualiza una Cuenta Bancaria</DialogTitle>
+								<DialogDescription>Personaliza una Cuenta.</DialogDescription>
 							</DialogHeader>
-							<ExpenseCategoriesForm
-								selectedExpenseCategory={row.original}
-								type="Update"
-							>
+							<BankAccoutForm selectedBankAccout={row.original} type="Update">
 								<DialogClose asChild>
 									<Button type="button" variant="secondary">
 										Cerrar
 									</Button>
 								</DialogClose>
-							</ExpenseCategoriesForm>
+							</BankAccoutForm>
 						</DialogContent>
 					</Dialog>
-					{areInactiveExpenseCategoriesData ? (
+					{areInactiveBankAccountsData ? (
 						<Dialog>
 							<DialogTrigger asChild>
 								<ArchiveRestore
@@ -87,17 +93,16 @@ export const ExpenseCategoriesTableColumns = ({
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
-									<DialogTitle>Restaurar una Categoría de Gastos</DialogTitle>
+									<DialogTitle>Restaurar una Cuenta Bancaria</DialogTitle>
 									<DialogDescription>
-										Permite reactivar una categoría que fue archivada o
-										deshabilitada previamente. Al restaurarla, esta categoría de
-										gasto volverá a estar disponible para su uso con la
-										configuración anterior, salvo que se realicen cambios
-										adicionales.
+										Permite reactivar una cuenta que fue archivada o
+										deshabilitada previamente. Al restaurarla, esta cuenta
+										volverá a estar disponible para su uso con la configuración
+										anterior, salvo que se realicen cambios adicionales.
 									</DialogDescription>
 								</DialogHeader>
-								<ExpenseCategoriesForm
-									selectedExpenseCategory={row.original}
+								<BankAccoutForm
+									selectedBankAccout={row.original}
 									type="Restore"
 								>
 									<DialogClose asChild>
@@ -105,7 +110,7 @@ export const ExpenseCategoriesTableColumns = ({
 											Cerrar
 										</Button>
 									</DialogClose>
-								</ExpenseCategoriesForm>
+								</BankAccoutForm>
 							</DialogContent>
 						</Dialog>
 					) : (
@@ -115,23 +120,20 @@ export const ExpenseCategoriesTableColumns = ({
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
-									<DialogTitle>Dar de Baja una Categoría de Gastos</DialogTitle>
+									<DialogTitle>Dar de Baja una Cuenta</DialogTitle>
 									<DialogDescription>
-										Dar de baja servicio implica deshabilitar o desactivar una
-										Categoría de Gasto dentro del sistema, evitando que esté
-										disponible para su uso o contratación.
+										Dar de baja una cuenta implica deshabilitar o desactivar una
+										cuenta bancaria dentro del sistema, evitando que esté
+										disponible para su uso.
 									</DialogDescription>
 								</DialogHeader>
-								<ExpenseCategoriesForm
-									selectedExpenseCategory={row.original}
-									type="Delete"
-								>
+								<BankAccoutForm selectedBankAccout={row.original} type="Delete">
 									<DialogClose asChild>
 										<Button type="button" variant="secondary">
 											Cerrar
 										</Button>
 									</DialogClose>
-								</ExpenseCategoriesForm>
+								</BankAccoutForm>
 							</DialogContent>
 						</Dialog>
 					)}

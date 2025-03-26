@@ -79,7 +79,7 @@ const menuItems = [
 			},
 			{
 				label: "Cuentas Bancarias",
-				href: "/dashboard/maintenance/bank-account",
+				href: "/dashboard/maintenance/bank-accounts",
 				icon: Settings,
 			},
 		],
