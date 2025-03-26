@@ -74,7 +74,7 @@ const menuItems = [
 			},
 			{
 				label: "Categoría de Gastos",
-				href: "/dashboard/maintenance/expense-category",
+				href: "/dashboard/maintenance/expense-categories",
 				icon: Settings,
 			},
 			{

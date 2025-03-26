@@ -31,11 +31,11 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard/maintenance')->group(
         Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.service-categories.destroy');
     });
 
-    Route::controller(ExpenseCategoryController::class)->prefix('expense-category')->group(function () {
-        Route::get('/', 'index')->name('dashboard.maintenance.expense-category');
-        Route::post('/', 'store')->name('dashboard.maintenance.expense-category.store');
-        Route::patch('/{id}', 'update')->name('dashboard.maintenance.expense-category.update');
-        Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.expense-category.destroy');
+    Route::controller(ExpenseCategoryController::class)->prefix('expense-categories')->group(function () {
+        Route::get('/', 'index')->name('dashboard.maintenance.expense-categories');
+        Route::post('/', 'store')->name('dashboard.maintenance.expense-categories.store');
+        Route::patch('/{id}', 'update')->name('dashboard.maintenance.expense-categories.update');
+        Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.expense-categories.destroy');
     });
 
     Route::controller(BankAccountController::class)->prefix('bank-account')->group(function () {

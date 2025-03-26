@@ -10,54 +10,57 @@ class ExpenseCategoryController extends Controller
 {
     public function index()
     {
-        $categories = ExpenseCategory::orderBy('id', 'asc')->paginate(8);
+        $expenseCategories = ExpenseCategory::where('status', true)
+            ->orderBy('id', 'asc')
+            ->get();
 
-        return Inertia::render('Dashboard/Maintenance/ExpenseCategory', [
-            'categories' => $categories,
+        $inactiveExpenseCategories = ExpenseCategory::where('status', false)
+            ->orderBy('id', 'asc')
+            ->get();
+
+        return Inertia::render('Dashboard/Maintenance/ExpenseCategories', [
+            'expenseCategories' => $expenseCategories,
+            'inactiveExpenseCategories' => $inactiveExpenseCategories,
         ]);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:75|unique:expense_categories',
-            'description' => 'nullable|string|max:255',
-            'status' => 'boolean',
-        ]);
+        try
+        {
+            $validated = $request->validate([
+                'name' => 'required|string|max:75|unique:expense_categories',
+                'description' => 'nullable|string|max:255',
+                'status' => 'boolean',
+            ]);
 
-        $category = ExpenseCategory::create([
-            'name' => $request->name,
-            'description' => $request->description,
-            'status' => $request->status
-        ]);
+            ExpenseCategory::create($validated);
 
-        return back()->with([
-            'success' => 'EXPENSE CATEGORY created successfully.',
-            'category' => $category,
-        ]);
+            return back()->with('success', 'La Categoría de Gasto se ha agregado correctamente.');
+        } catch (\Exception $e)
+        {
+            return back()->withErrors(['error' => "Error: " . $e->getMessage()]);
+        }
     }
 
-    public function update(Request $request, ExpenseCategory $expenseCategory)
+    public function update(Request $request, $id)
     {
-        $validate = $request->validate([
-            'name' => 'required|string|max:75|unique:expense_categories,name,'.$expenseCategory->id,
-            'description' => 'nullable|string|max:255',
-            'status' => 'boolean'
-        ]);
+        try
+        {
+            $expenseCategory = ExpenseCategory::findOrFail($id);
 
-        $expenseCategory->update($validate);
+            $validated = $request->validate([
+                'name' => 'string|max:75',
+                'description' => 'nullable|string|max:255',
+                'status' => 'boolean'
+            ]);
 
-        return back()->with([
-            'success' => 'EXPENSE CATEGORY updated successfully.',
-        ]);
-    }
+            $expenseCategory->update($validated);
 
-    public function destroy(ExpenseCategory $expenseCategory)
-    {
-        $expenseCategory->delete();
-
-        return back()->with([
-            'success' => 'EXPENSE CATEGORY deleted successfully.'
-        ]);
+            return back()->with('success', 'La Categoría de Gasto se ha actualizado correctamente.');
+        } catch (\Exception $e)
+        {
+            return back()->withErrors(['error' => "Error: " . $e->getMessage()]);
+        }
     }
 }

@@ -31,7 +31,8 @@ class ServiceController extends Controller
     
     public function store(Request $request)
     {
-        try{
+        try
+        {
             $validated = $request->validate([
                 'name' => 'required|string|max:75|unique:services',
                 'description' => 'nullable|string|max:255',
@@ -43,7 +44,8 @@ class ServiceController extends Controller
             Service::create($validated);
 
             return back()->with('success', 'Servicio agregado correctamente.');
-        } catch (\Exception $e){
+        } catch (\Exception $e)
+        {
             return back()->withErrors(['error' => "Error: " . $e->getMessage()]);
         }
     }

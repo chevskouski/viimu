@@ -1,3 +1,10 @@
+export interface ExpenseCategory {
+	id: number;
+	name: string;
+	description: string;
+	status: boolean;
+}
+
 export interface ServiceCategory {
 	id: number;
 	name: string;
