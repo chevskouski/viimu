@@ -6,17 +6,9 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/Components/atoms/form";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/Components/atoms/select";
 import { useMaintenanceCrud } from "@/hooks/use-maintenance-crud";
-import type { Service, ServiceCategory } from "@/lib/types/types";
+import type { ServiceCategory } from "@/lib/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { router } from "@inertiajs/react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "../atoms/button";
@@ -30,13 +22,13 @@ const btnTitles: Record<string, string> = {
 };
 
 interface Props {
-	selectedService?: Service;
+	selectedServiceCategory?: ServiceCategory;
 	children?: React.ReactNode;
 	type: "Insert" | "Update" | "Delete" | "Restore";
 }
 
 export function ServiceCategoryForm({
-	selectedService,
+	selectedServiceCategory,
 	children,
 	type,
 }: Props) {
@@ -63,7 +55,7 @@ export function ServiceCategoryForm({
 	//Inicializar el formulario
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
-		defaultValues: selectedService || {
+		defaultValues: selectedServiceCategory || {
 			id: 0,
 			name: "",
 			description: "",
@@ -82,17 +74,17 @@ export function ServiceCategoryForm({
 
 		let submitFunction = onSubmitInsert;
 
-		if (type === "Update" && selectedService) {
-			submitFunction = (data) => onSubmitUpdate(data, selectedService.id);
-		} else if (type === "Delete" && selectedService) {
+		if (type === "Update" && selectedServiceCategory) {
+			submitFunction = (data) => onSubmitUpdate(data, selectedServiceCategory.id);
+		} else if (type === "Delete" && selectedServiceCategory) {
 			submitFunction = (data) => {
 				data.status = false;
-				onSubmitUpdate(data, selectedService.id);
+				onSubmitUpdate(data, selectedServiceCategory.id);
 			};
-		} else if (type === "Restore" && selectedService) {
+		} else if (type === "Restore" && selectedServiceCategory) {
 			submitFunction = (data) => {
 				data.status = true;
-				onSubmitUpdate(data, selectedService.id);
+				onSubmitUpdate(data, selectedServiceCategory.id);
 			};
 		}
 

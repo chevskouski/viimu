@@ -10,10 +10,15 @@ class ServiceCategoryController extends Controller
 {
     public function index()
     {
-        $serviceCategories = ServiceCategory::orderBy('id', 'asc')->get();
+        $serviceCategories = ServiceCategory::where('status', true)
+            ->orderBy('id', 'asc')->get();
+            
+        $inactiveServiceCategories = ServiceCategory::where('status', false)
+            ->orderBy('id', 'asc')->get();
 
         return Inertia::render('Dashboard/Maintenance/ServiceCategories', [
             'serviceCategories' => $serviceCategories,
+            'inactiveServiceCategories' => $inactiveServiceCategories,
         ]);
     }
 
@@ -35,12 +40,14 @@ class ServiceCategoryController extends Controller
         }        
     }
 
-    public function update(Request $request, ServiceCategory $serviceCategory)
+    public function update(Request $request, $id)
     {
         try
         {
+            $serviceCategory = ServiceCategory::findOrFail($id);
+
             $validate = $request->validate([
-                'name' => 'string|max:75|unique:service_categories,name,'.$serviceCategory->id,
+                'name' => 'string|max:75|',
                 'description' => 'nullable|string|max:255',
                 'status' => 'boolean',
             ]);

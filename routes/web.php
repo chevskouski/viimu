@@ -27,29 +27,29 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard/maintenance')->group(
     Route::controller(ServiceCategoryController::class)->prefix('service-categories')->group(function () {
         Route::get('/', 'index')->name('dashboard.maintenance.service-categories');
         Route::post('/', 'store')->name('dashboard.maintenance.service-categories.store');
-        Route::patch('/{serviceCategory}', 'update')->name('dashboard.maintenance.service-categories.update');
-        Route::delete('/{serviceCategory}', 'destroy')->name('dashboard.maintenance.service-categories.destroy');
+        Route::patch('/{id}', 'update')->name('dashboard.maintenance.service-categories.update');
+        Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.service-categories.destroy');
     });
 
     Route::controller(ExpenseCategoryController::class)->prefix('expense-category')->group(function () {
         Route::get('/', 'index')->name('dashboard.maintenance.expense-category');
         Route::post('/', 'store')->name('dashboard.maintenance.expense-category.store');
-        Route::patch('/{expenseCategory}', 'update')->name('dashboard.maintenance.expense-category.update');
-        Route::delete('/{expenseCategory}', 'destroy')->name('dashboard.maintenance.expense-category.destroy');
+        Route::patch('/{id}', 'update')->name('dashboard.maintenance.expense-category.update');
+        Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.expense-category.destroy');
     });
 
     Route::controller(BankAccountController::class)->prefix('bank-account')->group(function () {
         Route::get('/', 'index')->name('dashboard.maintenance.bank-account');
         Route::post('/', 'store')->name('dashboard.maintenance.bank-account.store');
-        Route::patch('/{bankAccount}', 'update')->name('dashboard.maintenance.bank-account.update');
-        Route::delete('/{bankAccount}', 'destroy')->name('dashboard.maintenance.bank-account.destroy');
+        Route::patch('/{id}', 'update')->name('dashboard.maintenance.bank-account.update');
+        Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.bank-account.destroy');
     });
 
     Route::controller(ServiceController::class)->prefix('services')->group(function () {
         Route::get('/', 'index')->name('dashboard.maintenance.services');
         Route::post('/', 'store')->name('dashboard.maintenance.services.store');
-        Route::patch('/{service}', 'update')->name('dashboard.maintenance.services.update');
-        Route::delete('/{service}', 'destroy')->name('dashboard.maintenance.services.destroy');
+        Route::patch('/{id}', 'update')->name('dashboard.maintenance.services.update');
+        Route::delete('/{id}', 'destroy')->name('dashboard.maintenance.services.destroy');
     });
 });
 

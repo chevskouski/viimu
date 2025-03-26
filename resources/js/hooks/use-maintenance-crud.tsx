@@ -35,7 +35,7 @@ export function useMaintenanceCrud<T extends z.ZodType>(
 		id: number,
 		options?: UseCRUDOptions<z.infer<typeof formSchema>>,
 	) {
-		router.patch(route(`${routePrefix}.update`, { service: id }), values, {
+		router.patch(route(`${routePrefix}.update`, { id: id }), values, {
 			onSuccess: (page) => {
 				const flash = page.props.flash as Record<string, unknown>;
 				if (flash && "success" in flash) {

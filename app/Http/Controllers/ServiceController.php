@@ -48,9 +48,11 @@ class ServiceController extends Controller
         }
     }
 
-    public function update(Request $request, Service $service)
+    public function update(Request $request, $id)
     {
         try{
+            $service = Service::findOrFail($id);
+
             $validated = $request->validate([
                 'name' => 'string|max:75',
                 'description' => 'nullable|string|max:255',
