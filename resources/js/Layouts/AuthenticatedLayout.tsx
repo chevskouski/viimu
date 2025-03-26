@@ -9,7 +9,7 @@ import {
 import { Separator } from "@/Components/atoms/separator";
 import { SidebarProvider, SidebarTrigger } from "@/Components/atoms/sidebar";
 import { Toaster } from "@/Components/atoms/sonner";
-import { AppSidebar } from "@/Components/sidebar/app-sidebar";
+import { AppSidebar } from "@/Components/organisms/app-sidebar";
 import { usePage } from "@inertiajs/react";
 import React, { type PropsWithChildren, type ReactNode, useMemo } from "react";
 

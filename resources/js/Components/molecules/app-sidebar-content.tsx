@@ -56,7 +56,7 @@ const menuItems = [
 	{
 		title: "Inventario",
 		icon: Boxes,
-		href: "#",
+		href: "/dashboard/inventory",
 	},
 	{
 		title: "Mantenimientos",

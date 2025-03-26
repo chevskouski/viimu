@@ -7,9 +7,9 @@ import {
 	SidebarHeader,
 } from "@/Components/atoms/sidebar";
 import { usePage } from "@inertiajs/react";
-import { AppSidebarContent } from "./app-sidebar-content";
-import { NavUser } from "./app-sidebar-footer";
-import { AppSidebarHeader } from "./app-sidebar-header";
+import { AppSidebarContent } from "../molecules/app-sidebar-content";
+import { NavUser } from "../molecules/app-sidebar-footer";
+import { AppSidebarHeader } from "../molecules/app-sidebar-header";
 
 export function AppSidebar() {
 	const user = usePage().props.auth.user;
