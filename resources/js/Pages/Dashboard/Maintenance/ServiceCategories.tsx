@@ -1,6 +1,6 @@
 import { AddServiceCategory } from "@/Components/molecules/add-service-category";
 import { ServiceCategoryTable } from "@/Components/organisms/service-category-table";
-import { ViewInactiveServiceCategory } from "@/Components/organisms/view-inactive-category-services";
+import { ViewInactiveServiceCategories } from "@/Components/organisms/view-inactive-service-categories";
 import { MaintenanceLayout } from "@/Components/templates/maintenance-layout";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import type { ServiceCategory } from "@/lib/types/types";
@@ -23,7 +23,7 @@ export default function ServiceCategories() {
 				header={
 					<>
 						<AddServiceCategory />
-						<ViewInactiveServiceCategory
+						<ViewInactiveServiceCategories
 							inactiveServiceCategories={inactiveServiceCategories}
 						/>
 					</>

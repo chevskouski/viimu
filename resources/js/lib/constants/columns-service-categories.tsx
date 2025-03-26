@@ -59,10 +59,10 @@ export const ServiceCategoryTableColumns = ({
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>Actualiza un Servicio</DialogTitle>
+								<DialogTitle>Actualiza una Categoría de Servicio</DialogTitle>
 								<DialogDescription>
-									Personaliza un nuevo servicio a ofrecer. Poporcionando su
-									nombre, descripción, precio y categoría específica.
+									Personaliza una categoría de Servicios. Poporcionando su
+									nombre, descripción.
 								</DialogDescription>
 							</DialogHeader>
 							{/* UPDATE */}
@@ -88,10 +88,10 @@ export const ServiceCategoryTableColumns = ({
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
-									<DialogTitle>Restaurar un Servicio</DialogTitle>
+									<DialogTitle>Restaurar una Categoría de Servicio</DialogTitle>
 									<DialogDescription>
-										Permite reactivar un servicio que fue archivado o
-										deshabilitado previamente. Al restaurarlo, el servicio
+										Permite reactivar un categoría que fue archivada o
+										deshabilitada previamente. Al restaurarlo, el servicio
 										volverá a estar disponible para su uso con la configuración
 										anterior, salvo que se realicen cambios adicionales.
 									</DialogDescription>
@@ -115,11 +115,11 @@ export const ServiceCategoryTableColumns = ({
 							</DialogTrigger>
 							<DialogContent>
 								<DialogHeader>
-									<DialogTitle>Dar de Baja un Servicio</DialogTitle>
+									<DialogTitle>Dar de Baja una Categoría Servicio</DialogTitle>
 									<DialogDescription>
-										Dar de baja servicio implica deshabilitar o desactivar un
-										servicio dentro del sistema, evitando que esté disponible
-										para su uso o contratación.
+										Dar de baja una categoría servicio implica deshabilitar o
+										desactivar una categoría dentro del sistema, evitando que
+										esté disponible para su uso o contratación.
 									</DialogDescription>
 								</DialogHeader>
 								<ServiceCategoryForm
