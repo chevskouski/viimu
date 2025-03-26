@@ -81,7 +81,11 @@ export function ServiceForm({
 	});
 
 	// Manejo del Submit
-	const { onSubmitInsert, onSubmitUpdate } = useMaintenanceCrud(formSchema);
+	const routePrefix = "dashboard.maintenance.services";
+	const { onSubmitInsert, onSubmitUpdate } = useMaintenanceCrud(
+		formSchema,
+		routePrefix,
+	);
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
