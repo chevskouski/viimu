@@ -6,11 +6,16 @@ import type * as z from "zod";
 
 interface UseCRUDOptions<T extends FieldValues> {
 	form: UseFormReturn<T>;
+	routePrefix: string;
 }
 
-export function useMaintenanceCrud<T extends z.ZodType>(formSchema: T) {
+export function useMaintenanceCrud<T extends z.ZodType>(
+	formSchema: T,
+	routePrefix: string,
+) {
+	//INSERT
 	function onSubmitInsert(values: z.infer<typeof formSchema>) {
-		router.post(route("dashboard.maintenance.services.store"), values, {
+		router.post(route(`${routePrefix}.store`), values, {
 			onSuccess: (page) => {
 				const flash = page.props.flash as Record<string, unknown>;
 				if (flash && "success" in flash) {
@@ -30,24 +35,20 @@ export function useMaintenanceCrud<T extends z.ZodType>(formSchema: T) {
 		id: number,
 		options?: UseCRUDOptions<z.infer<typeof formSchema>>,
 	) {
-		router.patch(
-			route("dashboard.maintenance.services.update", { service: id }),
-			values,
-			{
-				onSuccess: (page) => {
-					const flash = page.props.flash as Record<string, unknown>;
-					if (flash && "success" in flash) {
-						toast.success(String(flash.success));
-					}
-					options?.form.reset();
-				},
-				onError: (errors) => {
-					if (errors.error) {
-						toast.error(String(errors.error));
-					}
-				},
+		router.patch(route(`${routePrefix}.update`, { service: id }), values, {
+			onSuccess: (page) => {
+				const flash = page.props.flash as Record<string, unknown>;
+				if (flash && "success" in flash) {
+					toast.success(String(flash.success));
+				}
+				options?.form.reset();
 			},
-		);
+			onError: (errors) => {
+				if (errors.error) {
+					toast.error(String(errors.error));
+				}
+			},
+		});
 	}
 
 	return {

@@ -69,7 +69,7 @@ const menuItems = [
 			},
 			{
 				label: "Categorías de Servicios",
-				href: "/dashboard/maintenance/service-category",
+				href: "/dashboard/maintenance/service-categories",
 				icon: Settings,
 			},
 			{

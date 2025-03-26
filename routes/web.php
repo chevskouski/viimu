@@ -24,11 +24,11 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard/maintenance')->group(function () {
-    Route::controller(ServiceCategoryController::class)->prefix('service-category')->group(function () {
-        Route::get('/', 'index')->name('dashboard.maintenance.service-category');
-        Route::post('/', 'store')->name('dashboard.maintenance.service-category.store');
-        Route::patch('/{serviceCategory}', 'update')->name('dashboard.maintenance.service-category.update');
-        Route::delete('/{serviceCategory}', 'destroy')->name('dashboard.maintenance.service-category.destroy');
+    Route::controller(ServiceCategoryController::class)->prefix('service-categories')->group(function () {
+        Route::get('/', 'index')->name('dashboard.maintenance.service-categories');
+        Route::post('/', 'store')->name('dashboard.maintenance.service-categories.store');
+        Route::patch('/{serviceCategory}', 'update')->name('dashboard.maintenance.service-categories.update');
+        Route::delete('/{serviceCategory}', 'destroy')->name('dashboard.maintenance.service-categories.destroy');
     });
 
     Route::controller(ExpenseCategoryController::class)->prefix('expense-category')->group(function () {
