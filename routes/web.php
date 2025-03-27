@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceCategoryController;
 use App\Http\Controllers\ServiceController;
@@ -22,6 +23,11 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+    Route::controller(InventoryController::class)->prefix('inventory')->group(function () {
+        Route::get('/', 'index')->name('dashboard.inventory');
+    });
+});
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard/maintenance')->group(function () {
     Route::controller(ServiceCategoryController::class)->prefix('service-categories')->group(function () {

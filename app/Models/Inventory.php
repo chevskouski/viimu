@@ -18,4 +18,9 @@ class Inventory extends Model
     {
         return $this->hasMany(MaterialConsumption::class);
     }
+
+    public function inventoryMovement(): HasMany
+    {
+        return $this->hasMany(InventoryMovement::class);
+    }
 }
