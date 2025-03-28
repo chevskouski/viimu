@@ -36,10 +36,11 @@ export interface Service {
 
 export interface Inventory {
 	id: number;
-	sku: string;
-	type: string;
 	name: string;
 	description?: string;
+	category: string;
+	unit: string;
+	sku: string;
 	stock: number;
 	last_restock_date?: string;
 }
@@ -47,9 +48,9 @@ export interface Inventory {
 export interface InventoryMovement {
 	id: number;
 	inventory_id: number;
+	movement_date: string;
 	type: "in" | "out";
 	quantity: number;
-	movement_date: string;
-	notes?: string;
+	description: string;
 	inventory: Inventory;
 }

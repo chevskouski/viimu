@@ -26,6 +26,7 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
     Route::controller(InventoryController::class)->prefix('inventory')->group(function () {
         Route::get('/', 'index')->name('dashboard.inventory');
+        Route::post('/', 'store')->name('dashboard.inventory.store');
     });
 });
 
